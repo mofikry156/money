@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Wedding Invitation — Editor</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400;600&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400;600&family=Lato:wght@300;400&family=Amiri:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -370,6 +370,14 @@
     box-shadow: 0 6px 24px rgba(201,169,110,0.05);
   }
   input::placeholder, textarea::placeholder { color: rgba(253,248,240,0.25); font-style: italic; font-size: 0.95rem; }
+
+  /* Arabic input auto-styling */
+  input.arabic-input, textarea.arabic-input {
+    font-family: 'Amiri', serif;
+    direction: rtl;
+    font-size: 1.18rem;
+    letter-spacing: 0;
+  }
 
 
 
@@ -912,6 +920,32 @@
   }
 
   // ── DRUM PICKER ──────────────────────────────────────────────────
+  // ── ARABIC LIVE DETECTION ──
+  // Automatically switches inputs/textareas to Amiri + RTL when Arabic is typed
+  function hasArabic(str) {
+    return /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(str);
+  }
+  function updateArabic(el) {
+    if (hasArabic(el.value)) {
+      el.classList.add('arabic-input');
+    } else {
+      el.classList.remove('arabic-input');
+    }
+  }
+  // Apply to all current and future text inputs / textareas
+  function watchInputs() {
+    document.querySelectorAll('input[type="text"], textarea').forEach(el => {
+      if (!el.dataset.arabicWatched) {
+        el.dataset.arabicWatched = '1';
+        el.addEventListener('input', () => updateArabic(el));
+        updateArabic(el); // check existing value
+      }
+    });
+  }
+  watchInputs();
+  // Re-run when note entries are added dynamically
+  const _origAddNote = window.addNoteEntry;
+
   // Theme selector
   let currentTheme = 'gold';
   const themeNameEl = document.getElementById('themeName');
@@ -1001,6 +1035,7 @@
       </div>
     `;
     container.appendChild(div);
+    watchInputs(); // pick up new textarea in the note entry
   }
 
   function removeEntry(id) {
