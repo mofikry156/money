@@ -491,27 +491,178 @@ body { background: var(--dark); color: var(--accent-l); font-family: 'Lato', san
 @keyframes badgePulse { 0%,100%{opacity:.4;transform:scale(1)} 50%{opacity:1;transform:scale(1.3)} }
 
 @media (max-width:600px) {
-  .invitation { padding:54px 26px; }
+  /* Hero */
+  #hero { padding: 50px 20px 70px; }
+  .hero-scroll-hint { bottom: 22px; }
+
+  /* Card */
+  #section-card { padding: 50px 16px; }
+  .invitation { padding: 44px 20px 50px; }
   .inv-grid   { grid-template-columns:1fr; gap:18px; }
-  .corner     { width:62px; height:62px; }
+  .corner     { width:52px; height:52px; }
+
+  /* Details section */
+  #section-details { padding: 60px 20px; }
   .detail-item { grid-template-columns:1fr; text-align:center!important; gap:10px; }
   .detail-text,.detail-text.right { text-align:center!important; padding:0; }
   .detail-icon-wrap { flex-direction:row; justify-content:center; }
   .detail-vline { display:none; }
-  .special-msg-card { padding:28px 20px; }
+
+  /* Countdown */
+  #section-countdown { padding: 60px 20px; }
+
+  /* Together */
+  #section-together { padding: 60px 20px; }
+
+  /* Special section */
+  #section-special { padding: 50px 16px; }
+  .special-msg-card { padding:28px 18px; }
+
+  /* Secret code */
+  #secret-hint { padding: 40px 20px 30px; }
   .secret-input-row { flex-direction: column; }
-  .secret-unlock-btn { width: 100%; }
+  .secret-unlock-btn { width: 100%; padding: 16px; }
+  .secret-code-input { padding: 15px 18px; font-size: 1.2rem; }
+
+  /* Buttons */
+  .btn { padding: 14px 24px; }
+  .action-row { flex-direction: column; align-items: stretch; }
+  .action-row .btn { text-align: center; }
+
+  /* Gallery: stack duo layout on mobile */
+  .gallery-duo { grid-template-columns: 1fr; }
+  .gallery-duo .photo-frame-wrap:last-child { margin-top: 24px; }
+  .gallery-trio { grid-template-columns: 1fr; grid-template-rows: auto; }
+  .gallery-trio .photo-frame-wrap:first-child { grid-row: auto; }
+
+  /* Close section */
+  #section-close { padding: 50px 20px; }
+}
+
+/* Disable custom cursor and mouse-only effects on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  body { cursor: auto; }
+  #cursor, #cursor-ring { display: none; }
+
+  /* Disable 3D tilt — it doesn't apply on touch */
+  .invitation { transform: none !important; }
+
+  /* Reveal hover-dependent photo remove buttons always */
+  .photo-slot.has-image .remove-btn { opacity: 1; }
+
+  /* Disable hover scale on theme-like elements */
+  .photo-frame-wrap:hover .photo-mat img { transform: none; }
+  .photo-frame-wrap:hover .photo-outer-border { inset: -10px; border-color: rgba(181,128,138,0.18); }
+  .photo-frame-wrap:hover .photo-inner-border { opacity: 1; }
+  .photo-frame-wrap:hover .photo-mat::after { opacity: 1; }
+  .photo-frame-wrap:hover .photo-index { opacity: 1; }
+  .btn:hover { transform: none; box-shadow: none; }
 }
 
 @media print {
-  body { background:white; cursor:auto; }
-  #starfield,.petals,#cursor,#cursor-ring,#progress-bar,#section-together,#section-details,#section-countdown,#section-close,.sec-div,.hero-scroll-hint,#secret-hint,#section-special { display:none!important; }
-  #hero { min-height:auto; page-break-after:always; }
-  #section-card { min-height:auto; }
-  .invitation { box-shadow:none!important; }
-  .reveal,.reveal-left,.reveal-right,.reveal-scale { opacity:1!important; transform:none!important; }
-  .card-wrap.visible .corner { opacity:.45!important; }
-  .shine,.action-row { display:none!important; }
+  /* ── Page setup ── */
+  @page { margin: 0; size: A4 portrait; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+  /* Hide everything except the card */
+  html, body { margin: 0 !important; padding: 0 !important; height: 100% !important; }
+  body { background: #fdf8f0 !important; cursor: auto; }
+
+  #starfield, .petals, #cursor, #cursor-ring, #progress-bar,
+  #hero, #section-together, #section-details, #section-countdown,
+  #section-close, .sec-div, .hero-scroll-hint, #secret-hint,
+  #section-special, .shine, .action-row { display: none !important; }
+
+  /* Card section: full A4 page */
+  #section-card {
+    display: block !important;
+    position: fixed !important;
+    inset: 0 !important;
+    padding: 48px !important;
+    margin: 0 !important;
+    background: #fdf8f0 !important;
+  }
+
+  .card-wrap {
+    perspective: none !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    align-items: stretch !important;
+    justify-content: center !important;
+  }
+
+  /* The invitation card — stretches to fill the full page */
+  .invitation {
+    position: relative !important;
+    flex: 1 !important;
+    max-width: 640px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-evenly !important;
+    align-items: center !important;
+    padding: 60px 72px !important;
+    background: #fdf8f0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+    transform-style: flat !important;
+    outline: 1px solid rgba(138,108,58,0.4);
+    outline-offset: -1px;
+  }
+
+  /* Inner double-border frame */
+  .invitation::before {
+    content: '';
+    position: absolute;
+    inset: 18px;
+    border: 1px solid rgba(138,108,58,0.2);
+    pointer-events: none;
+  }
+
+  /* Remove noise texture */
+  .invitation::after { display: none !important; }
+
+  /* Hide directions/map links — not useful on paper */
+  .inv-cell-val a, .detail-value a { display: none !important; }
+
+  /* Force all animated elements visible */
+  .reveal, .reveal-left, .reveal-right, .reveal-scale {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  /* Corner ornaments */
+  .corner { opacity: 0.4 !important; transform: none !important; }
+  .corner.tr { transform: scaleX(-1) !important; }
+  .corner.bl { transform: scaleY(-1) !important; }
+  .corner.br { transform: scale(-1) !important; }
+
+  /* Frames */
+  .inv-frame       { opacity: 0.18 !important; }
+  .inv-frame-inner { opacity: 0.08 !important; }
+
+  /* Typography — print-safe dark colors, slightly larger to fill space */
+  .inv-eyebrow  { color: #8a6c3a !important; opacity: 1 !important; margin-bottom: 20px !important; }
+  .inv-names    { color: #1a1005 !important; font-size: 3.6rem !important; }
+  .inv-amp      { color: #c9a96e !important; font-size: 3rem !important; }
+  .inv-divider  { margin: 32px auto !important; }
+  .inv-message  { color: #4a3820 !important; opacity: 1 !important; font-size: 1.1rem !important; line-height: 2 !important; margin-bottom: 0 !important; }
+  .inv-grid     { margin: 0 auto !important; gap: 32px !important; }
+  .inv-cell-lbl { color: #8a6c3a !important; opacity: 1 !important; margin-bottom: 10px !important; }
+  .inv-cell-val { color: #1a1005 !important; font-size: 1.1rem !important; }
+
+  /* Divider lines */
+  .inv-div-line { background: #c9a96e !important; opacity: 0.5 !important; }
+  .inv-diamond  { background: #c9a96e !important; }
+  .inv-dot      { background: #c9a96e !important; }
+
+  /* Force gold theme for print regardless of chosen theme */
+  .invitation {
+    --accent: #c9a96e; --accent-d: #8a6c3a; --accent-l: #e8d5a3;
+    --name-col: #1a1005; --inv-bg: #fdf8f0;
+  }
 }
 </style>
 </head>
@@ -567,7 +718,6 @@ body { background: var(--dark); color: var(--accent-l); font-family: 'Lato', san
       <div class="corner br"><svg viewBox="0 0 90 90" fill="none"><path d="M8 8L8 82" stroke="currentColor" stroke-width=".9" opacity=".6"/><path d="M8 8L82 8" stroke="currentColor" stroke-width=".9" opacity=".6"/><path d="M8 38Q38 8 38 8" stroke="currentColor" stroke-width=".8" fill="none" opacity=".4"/><circle cx="8" cy="8" r="3.5" fill="currentColor" opacity=".7"/></svg></div>
 
       <div class="inv-eyebrow reveal d1">&#8212; Wedding Invitation &#8212;</div>
-      <div class="inv-together reveal d2">Together with their families</div>
       <div class="inv-names reveal d3">
         <span id="card-man">James</span>
         <span class="inv-amp">&amp;</span>
@@ -597,8 +747,9 @@ body { background: var(--dark); color: var(--accent-l); font-family: 'Lato', san
         </div>
       </div>
 
-      <div class="inv-footer-t reveal d6">Kindly RSVP &nbsp;&middot;&nbsp; Black Tie Optional</div>
-    </div>
+      <div id="card-today-row" style="display:none; margin-top:20px;">
+        <div class="inv-footer-t" id="card-today-display"></div>
+      </div>
   </div>
 </section>
 
@@ -708,11 +859,13 @@ body { background: var(--dark); color: var(--accent-l); font-family: 'Lato', san
   <div class="close-big reveal d1" id="close-names-big">James &amp; Sofia</div>
   <div class="close-sub reveal d2">We cannot wait to celebrate with you</div>
   <div class="action-row reveal d3">
-    <button class="btn primary" onclick="window.print()">&#128424; &nbsp;Print Invitation</button>
+    <button class="btn primary" onclick="window.focus(); setTimeout(() => window.print(), 0);">&#128424; &nbsp;Print Invitation</button>
   </div>
 </section>
 
 <script>
+const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+
 const p     = new URLSearchParams(location.search);
 const man   = p.get('man')   || 'James';
 const woman = p.get('woman') || 'Sofia';
@@ -722,6 +875,24 @@ const venue = p.get('venue') || '';
 const msg   = p.get('msg')   || '';
 const theme = p.get('theme') || 'gold';
 const specialEncoded = p.get('special') || '';
+const todayDateS = p.get('todayDate') || '';
+const todayTimeS = p.get('todayTime') || '';
+const textLocation = p.get('textLocation') || '';
+
+// Parse a human-formatted date string (e.g. "Saturday, June 14 2025") → Date object
+// Also handles legacy YYYY-MM-DD. Returns null if unparseable.
+function parseFormattedDate(s) {
+  if (!s) return null;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s.trim())) {
+    const parts = s.trim().split('-');
+    return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+  }
+  const d = new Date(s);
+  if (!isNaN(d)) return d;
+  const stripped = s.replace(/^[A-Za-z]+,\s*/, '');
+  const d2 = new Date(stripped);
+  return isNaN(d2) ? null : d2;
+}
 
 document.body.setAttribute('data-theme', theme);
 document.title = man + ' & ' + woman + ' \u2014 Wedding Invitation';
@@ -737,21 +908,56 @@ if (dateS) {
   ['card-date','detail-date'].forEach(id => document.getElementById(id).textContent = dateS);
 }
 if (timeS) ['card-time','detail-time'].forEach(id => document.getElementById(id).textContent = timeS);
-if (venue) {
+
+// Show today's date/time as a subtle footer line on the invitation card
+if (todayDateS || todayTimeS) {
+  const parts = [];
+  if (todayDateS) parts.push(todayDateS);
+  if (todayTimeS) parts.push(todayTimeS);
+  const todayRow = document.getElementById('card-today-row');
+  const todayDisplay = document.getElementById('card-today-display');
+  todayDisplay.textContent = parts.join(' · ');
+  todayRow.style.display = 'block';
+}
+if (venue || textLocation) {
   function isUrl(s) { return /^https?:\/\//i.test(s) || /^(www\.)/i.test(s); }
   function venueLink(href, label) {
     return '<a href="' + href + '" target="_blank" rel="noopener" style="color:var(--accent-l);text-decoration:none;border-bottom:1px solid var(--accent);opacity:0.9;transition:opacity .2s;padding-bottom:1px;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.9">' + label + ' <span style="font-size:.65em;opacity:.6">↗</span></a>';
   }
-  if (isUrl(venue)) {
-    const fullHref = /^https?:\/\//i.test(venue) ? venue : 'https://' + venue;
-    document.getElementById('card-venue').innerHTML = venueLink(fullHref, '📍 View Location');
-    document.getElementById('detail-venue').innerHTML = venueLink(fullHref, '📍 View on Maps');
-  } else {
-    const mapsHref = 'https://www.google.com/maps/search/' + encodeURIComponent(venue);
-    ['card-venue','detail-venue'].forEach(id => {
-      document.getElementById(id).innerHTML = venue + '<br>' + venueLink(mapsHref, '📍 Get Directions');
-    });
+
+  let cardVenueHTML = '';
+  let detailVenueHTML = '';
+
+  if (venue) {
+    if (isUrl(venue)) {
+      const fullHref = /^https?:\/\//i.test(venue) ? venue : 'https://' + venue;
+      const dirLink = venueLink(fullHref, '📍 View Location');
+      const detailDirLink = venueLink(fullHref, '📍 View on Maps');
+      if (textLocation) {
+        cardVenueHTML = textLocation + ' &nbsp;·&nbsp; ' + dirLink;
+        detailVenueHTML = textLocation + '<br>' + detailDirLink;
+      } else {
+        cardVenueHTML = dirLink;
+        detailVenueHTML = detailDirLink;
+      }
+    } else {
+      const mapsHref = 'https://www.google.com/maps/search/' + encodeURIComponent(venue);
+      const dirLink = venueLink(mapsHref, '📍 Get Directions');
+      if (textLocation) {
+        cardVenueHTML = textLocation + ' &nbsp;·&nbsp; ' + dirLink;
+        detailVenueHTML = textLocation + '<br>' + dirLink;
+      } else {
+        cardVenueHTML = venue + '<br>' + dirLink;
+        detailVenueHTML = venue + '<br>' + dirLink;
+      }
+    }
+  } else if (textLocation) {
+    cardVenueHTML = textLocation;
+    detailVenueHTML = textLocation;
   }
+
+  document.getElementById('card-venue').innerHTML = cardVenueHTML;
+  document.getElementById('detail-venue').innerHTML = detailVenueHTML;
 }
 if (msg) document.getElementById('card-message').textContent = msg;
 
@@ -884,11 +1090,25 @@ if (specialNotes && specialNotes.length > 0) {
 
 // Countdown
 function startCountdown() {
-  const rawDate = p.get('date') || '';
-  const m = rawDate.match(/(\w+),\s*(\w+)\s+(\d+),\s*(\d+)/);
-  if (!m) return;
-  const target = new Date(m[2] + ' ' + m[3] + ', ' + m[4]);
-  if (isNaN(target)) return;
+  // Support both legacy rawdate (YYYY-MM-DD) and new formatted date string
+  const rawdate = p.get('rawdate') || '';
+  const target = rawdate
+    ? (() => { const parts = rawdate.split('-'); return new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2])); })()
+    : parseFormattedDate(dateS);
+  if (!target || isNaN(target)) return;
+
+  // Apply ceremony time (timeS) so countdown ends at the actual ceremony hour, not midnight
+  if (timeS) {
+    const timeParts = timeS.match(/(\d+):(\d+)\s*(am|pm)?/i);
+    if (timeParts) {
+      let hours = parseInt(timeParts[1]);
+      const minutes = parseInt(timeParts[2]);
+      const meridiem = timeParts[3] ? timeParts[3].toLowerCase() : null;
+      if (meridiem === 'pm' && hours !== 12) hours += 12;
+      if (meridiem === 'am' && hours === 12) hours = 0;
+      target.setHours(hours, minutes, 0, 0);
+    }
+  }
   function tick() {
     const diff = target - new Date();
     const grid = document.getElementById('countdown-grid');
@@ -914,11 +1134,12 @@ startCountdown();
 // Starfield
 const canvas = document.getElementById('starfield');
 const ctx = canvas.getContext('2d');
+const starCount = isTouchDevice ? 80 : 200;
 let stars = [];
 function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
 function initStars() {
   stars = [];
-  for (let i = 0; i < 200; i++) {
+  for (let i = 0; i < starCount; i++) {
     stars.push({ x:Math.random()*canvas.width, y:Math.random()*canvas.height,
       r:Math.random()*1.5, a:Math.random(), spd:0.003+Math.random()*0.006, ph:Math.random()*Math.PI*2 });
   }
@@ -938,7 +1159,8 @@ window.addEventListener('resize', ()=>{ resizeCanvas(); initStars(); });
 
 // Petals
 const petalsEl = document.getElementById('petals');
-for (let i = 0; i < 30; i++) {
+const petalCount = isTouchDevice ? 12 : 30;
+for (let i = 0; i < petalCount; i++) {
   const el = document.createElement('div');
   el.className = 'petal';
   const w = 12 + Math.random()*26;
@@ -947,18 +1169,20 @@ for (let i = 0; i < 30; i++) {
   petalsEl.appendChild(el);
 }
 
-// Custom cursor
+// Custom cursor (desktop only)
 const cur = document.getElementById('cursor'), ring = document.getElementById('cursor-ring');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove', e => {
-  mx=e.clientX; my=e.clientY;
-  cur.style.left=mx+'px'; cur.style.top=my+'px';
-});
-(function animRing() {
-  rx+=(mx-rx)*.12; ry+=(my-ry)*.12;
-  ring.style.left=rx+'px'; ring.style.top=ry+'px';
-  requestAnimationFrame(animRing);
-})();
+if (!isTouchDevice) {
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove', e => {
+    mx=e.clientX; my=e.clientY;
+    cur.style.left=mx+'px'; cur.style.top=my+'px';
+  });
+  (function animRing() {
+    rx+=(mx-rx)*.12; ry+=(my-ry)*.12;
+    ring.style.left=rx+'px'; ring.style.top=ry+'px';
+    requestAnimationFrame(animRing);
+  })();
+}
 
 // Progress bar
 const bar = document.getElementById('progress-bar');
@@ -966,16 +1190,18 @@ window.addEventListener('scroll', () => {
   bar.style.width = (window.scrollY/(document.body.scrollHeight-window.innerHeight)*100)+'%';
 });
 
-// Card 3D tilt
-const inv = document.getElementById('invitation');
-document.addEventListener('mousemove', e => {
-  const r = inv.getBoundingClientRect();
-  const dx = (e.clientX-(r.left+r.width/2))/(r.width/2);
-  const dy = (e.clientY-(r.top+r.height/2))/(r.height/2);
-  if (dx*dx+dy*dy < 4) {
-    inv.style.transform = 'rotateY('+dx*5+'deg) rotateX('+(-dy*3.5)+'deg) scale(1.012)';
-  } else { inv.style.transform = ''; }
-});
+// Card 3D tilt (desktop only)
+if (!isTouchDevice) {
+  const inv = document.getElementById('invitation');
+  document.addEventListener('mousemove', e => {
+    const r = inv.getBoundingClientRect();
+    const dx = (e.clientX-(r.left+r.width/2))/(r.width/2);
+    const dy = (e.clientY-(r.top+r.height/2))/(r.height/2);
+    if (dx*dx+dy*dy < 4) {
+      inv.style.transform = 'rotateY('+dx*5+'deg) rotateX('+(-dy*3.5)+'deg) scale(1.012)';
+    } else { inv.style.transform = ''; }
+  });
+}
 
 // Intersection observer
 const io = new IntersectionObserver(entries => {

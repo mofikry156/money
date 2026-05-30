@@ -187,6 +187,150 @@
     opacity: 0.5;
   }
 
+  /* ── CUSTOM DATE / TIME PICKERS ── */
+
+  .picker-trigger {
+    background: rgba(201,169,110,0.04);
+    border: 1px solid rgba(201,169,110,0.12);
+    border-bottom: 1px solid rgba(201,169,110,0.32);
+    border-radius: 2px 2px 0 0;
+    padding: 13px 15px 11px;
+    color: var(--cream);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.08rem;
+    width: 100%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: border-color 0.35s, background 0.35s, box-shadow 0.35s;
+    user-select: none;
+    min-height: 48px;
+  }
+  .picker-trigger:hover, .picker-trigger.open {
+    border-bottom-color: var(--gold);
+    background: rgba(201,169,110,0.07);
+    box-shadow: 0 6px 24px rgba(201,169,110,0.05);
+  }
+  .picker-trigger .placeholder { color: rgba(253,248,240,0.25); font-style: italic; font-size: 0.95rem; }
+  .picker-trigger .chevron { font-size: 0.6rem; opacity: 0.45; transition: transform 0.25s; flex-shrink: 0; margin-left: 8px; }
+  .picker-trigger.open .chevron { transform: rotate(180deg); }
+
+  .picker-backdrop {
+    position: fixed; inset: 0; z-index: 900;
+    background: rgba(10,7,2,0.55);
+    backdrop-filter: blur(2px);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.22s;
+  }
+  .picker-backdrop.visible { opacity: 1; pointer-events: all; }
+
+  .picker-panel {
+    position: fixed;
+    z-index: 910;
+    background: #1e1608;
+    border: 1px solid rgba(201,169,110,0.22);
+    border-top: 1px solid rgba(201,169,110,0.42);
+    border-radius: 4px;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.7), inset 0 1px 0 rgba(201,169,110,0.1);
+    padding: 22px;
+    min-width: 280px;
+    max-width: 320px;
+    opacity: 0; pointer-events: none;
+    transform: translateY(8px) scale(0.97);
+    transition: opacity 0.22s, transform 0.22s;
+  }
+  .picker-panel.visible { opacity: 1; pointer-events: all; transform: translateY(0) scale(1); }
+
+  .cal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .cal-nav {
+    background: none; border: none; color: var(--gold); cursor: pointer;
+    font-size: 1rem; opacity: 0.6; width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; transition: background 0.18s, opacity 0.18s;
+  }
+  .cal-nav:hover { background: rgba(201,169,110,0.12); opacity: 1; }
+  .cal-month-label {
+    font-family: 'Cinzel', serif; font-size: 0.68rem;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--gold-light); opacity: 0.85;
+  }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+  .cal-dow {
+    font-size: 0.48rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--gold); opacity: 0.4; text-align: center; padding: 0 0 6px;
+  }
+  .cal-day {
+    aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif; font-size: 0.88rem;
+    color: var(--cream); opacity: 0.75; border-radius: 50%; cursor: pointer;
+    transition: background 0.18s, opacity 0.18s; border: none; background: none;
+  }
+  .cal-day:hover { background: rgba(201,169,110,0.14); opacity: 1; }
+  .cal-day.today { border: 1px solid rgba(201,169,110,0.35); opacity: 0.9; }
+  .cal-day.selected { background: var(--gold); color: var(--deep); opacity: 1; font-weight: 600; }
+  .cal-day.empty { pointer-events: none; opacity: 0; }
+
+  .time-drum-wrap {
+    display: flex; align-items: center; gap: 8px;
+    justify-content: center; margin-top: 4px;
+  }
+  .drum-col { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .drum-label {
+    font-size: 0.46rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--gold); opacity: 0.45; margin-bottom: 2px;
+  }
+  .drum {
+    width: 64px; height: 200px; overflow: hidden; position: relative;
+    border: 1px solid rgba(201,169,110,0.16); border-radius: 6px;
+    cursor: grab; background: rgba(0,0,0,0.3); touch-action: none;
+  }
+  .drum:active { cursor: grabbing; }
+  .drum::before, .drum::after {
+    content: ''; position: absolute; left: 0; right: 0; height: 48px; z-index: 2; pointer-events: none;
+  }
+  .drum::before { top: 0; background: linear-gradient(to bottom, #1e1608 0%, transparent 100%); }
+  .drum::after  { bottom: 0; background: linear-gradient(to top, #1e1608 0%, transparent 100%); }
+  .drum-stripe {
+    position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%);
+    height: 40px; z-index: 1;
+    border-top: 1px solid rgba(201,169,110,0.35); border-bottom: 1px solid rgba(201,169,110,0.35);
+    background: rgba(201,169,110,0.07); pointer-events: none;
+  }
+  .drum-list { position: absolute; left: 0; right: 0; top: 0; }
+  .drum-item {
+    height: 40px; display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif; font-size: 1.3rem;
+    color: var(--cream); opacity: 0.3; user-select: none;
+    transition: opacity 0.12s;
+  }
+  .drum-item.selected { opacity: 1; font-size: 1.45rem; }
+  .drum-sep {
+    font-family: 'Cormorant Garamond', serif; font-size: 1.6rem;
+    color: var(--gold); opacity: 0.5; margin-top: 22px;
+  }
+  .ampm-col { display: flex; flex-direction: column; gap: 6px; margin-top: 22px; }
+  .ampm-btn {
+    width: 42px; padding: 7px 0;
+    background: rgba(201,169,110,0.06); border: 1px solid rgba(201,169,110,0.14);
+    border-radius: 3px; color: var(--cream); font-family: 'Cinzel', serif;
+    font-size: 0.62rem; letter-spacing: 0.18em; cursor: pointer; opacity: 0.45;
+    transition: background 0.18s, opacity 0.18s;
+  }
+  .ampm-btn.active { background: rgba(201,169,110,0.2); border-color: rgba(201,169,110,0.45); opacity: 1; }
+
+  .picker-confirm {
+    margin-top: 18px; width: 100%; padding: 10px; background: none;
+    border: 1px solid rgba(201,169,110,0.3); border-radius: 2px;
+    color: var(--gold); font-family: 'Cinzel', serif;
+    font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase;
+    cursor: pointer; transition: background 0.2s, border-color 0.2s;
+  }
+  .picker-confirm:hover { background: rgba(201,169,110,0.1); border-color: rgba(201,169,110,0.55); }
+
   input[type="text"], input[type="date"], textarea {
     background: rgba(201,169,110,0.04);
     border: 1px solid rgba(201,169,110,0.12);
@@ -207,6 +351,9 @@
     box-shadow: 0 6px 24px rgba(201,169,110,0.05);
   }
   input::placeholder, textarea::placeholder { color: rgba(253,248,240,0.25); font-style: italic; font-size: 0.95rem; }
+
+
+
 
   .field::after {
     content: '';
@@ -555,10 +702,60 @@
     position: relative; z-index: 1;
   }
 
-  @media (max-width: 520px) {
-    .editor { padding: 32px 24px; }
-    .field-row { grid-template-columns: 1fr; }
-    .photo-slots { justify-content: center; }
+  @media (max-width: 600px) {
+    body { padding: 36px 14px 60px; }
+    .header { margin-bottom: 32px; }
+    .ornament { margin-bottom: 32px; }
+    .editor { padding: 28px 18px 32px; }
+    .editor-title { margin-bottom: 24px; }
+    .field-row { grid-template-columns: 1fr; gap: 16px; }
+    .full-row { margin-bottom: 16px; }
+
+    /* Bigger touch targets for inputs */
+    input[type="text"], input[type="date"], textarea {
+      padding: 15px 14px 13px;
+      font-size: 1rem;
+    }
+
+    /* Theme row wrapping */
+    .theme-row { flex-wrap: wrap; gap: 12px; }
+    .theme-name { width: 100%; margin-left: 0; text-align: center; }
+
+    /* Bigger theme buttons */
+    .theme-btn { width: 42px; height: 42px; }
+
+    /* Photo slots: fill width on mobile */
+    .photo-slots { justify-content: flex-start; gap: 8px; }
+    .photo-slot { width: 72px; height: 72px; }
+
+    /* Note entries */
+    .note-entry { padding: 18px 14px 14px; }
+
+    /* Make remove/add buttons easier to tap */
+    .remove-entry-btn { width: 28px; height: 28px; font-size: 0.8rem; }
+    .add-note-btn { width: 28px; height: 28px; font-size: 1.1rem; }
+
+    /* Code preview stacks nicely */
+    .code-preview { flex-wrap: wrap; gap: 8px; padding: 10px 12px; }
+    .code-value { min-width: 100%; text-align: left; }
+
+    /* Bigger generate buttons */
+    .generate-btn { padding: 18px; font-size: 0.68rem; }
+    .generate-special-btn { padding: 17px; }
+
+    /* Reduce particle count via opacity — JS still runs but less visible */
+    .particles { opacity: 0.4; }
+  }
+
+  /* Prevent hover states sticking on touch devices */
+  @media (hover: none) {
+    .generate-btn:hover { transform: none; box-shadow: 0 4px 28px rgba(201,169,110,0.22); }
+    .generate-special-btn:hover { transform: none; box-shadow: 0 4px 28px rgba(181,113,127,0.22); }
+    .theme-btn:hover { transform: none; }
+    .add-note-btn:hover { transform: none; }
+    .photo-slot:hover { border-color: rgba(181,128,138,0.3); background: rgba(181,128,138,0.04); }
+    /* Show remove button on touch always (no hover to reveal it) */
+    .photo-slot.has-image .remove-btn { opacity: 1; }
   }
 </style>
 </head>
@@ -592,14 +789,43 @@
     </div>
   </div>
 
+  <!-- TODAY'S DATE -->
   <div class="field-row">
     <div class="field">
-      <label><span class="dot"></span>Date</label>
-      <input type="date" id="weddingDate" />
+      <label><span class="dot"></span>Today's Date</label>
+      <div class="picker-trigger" id="todayDateTrigger" onclick="openPicker('todayDate','date',this)">
+        <span class="picker-val placeholder">Select date</span>
+        <span class="chevron">▼</span>
+      </div>
+      <input type="hidden" id="todayDate" />
     </div>
     <div class="field">
-      <label><span class="dot"></span>Time</label>
-      <input type="text" id="weddingTime" placeholder="e.g. 5:00 PM" />
+      <label><span class="dot"></span>Today's Time</label>
+      <div class="picker-trigger" id="todayTimeTrigger" onclick="openPicker('todayTime','time',this)">
+        <span class="picker-val placeholder">Select time</span>
+        <span class="chevron">▼</span>
+      </div>
+      <input type="hidden" id="todayTime" />
+    </div>
+  </div>
+
+  <!-- CEREMONY DATE -->
+  <div class="field-row">
+    <div class="field">
+      <label><span class="dot"></span>Ceremony Date</label>
+      <div class="picker-trigger" id="ceremonyDateTrigger" onclick="openPicker('ceremonyDate','date',this)">
+        <span class="picker-val placeholder">Select date</span>
+        <span class="chevron">▼</span>
+      </div>
+      <input type="hidden" id="ceremonyDate" />
+    </div>
+    <div class="field">
+      <label><span class="dot"></span>Ceremony Time</label>
+      <div class="picker-trigger" id="ceremonyTimeTrigger" onclick="openPicker('ceremonyTime','time',this)">
+        <span class="picker-val placeholder">Select time</span>
+        <span class="chevron">▼</span>
+      </div>
+      <input type="hidden" id="ceremonyTime" />
     </div>
   </div>
 
@@ -607,6 +833,12 @@
     <label><span class="dot"></span>Venue / Location</label>
     <input type="text" id="venue" placeholder="e.g. The Grand Ballroom, Cairo" />
     <div style="font-size:0.55rem;letter-spacing:0.2em;color:var(--gold);opacity:0.35;margin-top:6px;font-family:'Lato',sans-serif;">Paste a Google Maps link and it will become clickable in the invitation</div>
+  </div>
+
+  <div class="full-row field">
+    <label><span class="dot"></span>Text Location <span style="opacity:0.4;font-style:italic;letter-spacing:0.1em;text-transform:none;font-size:0.85em">(optional)</span></label>
+    <input type="text" id="textLocation" placeholder="e.g. 12 Rose Garden Lane, Hall B, 2nd Floor" />
+    <div style="font-size:0.55rem;letter-spacing:0.2em;color:var(--gold);opacity:0.35;margin-top:6px;font-family:'Lato',sans-serif;">Appears on the invitation · shown alongside or instead of the directions link</div>
   </div>
 
   <div class="full-row field">
@@ -650,7 +882,9 @@
 <script>
   // Particles
   const pc = document.getElementById('particles');
-  for (let i = 0; i < 30; i++) {
+  const isMobile = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+  const particleCount = isMobile ? 10 : 30;
+  for (let i = 0; i < particleCount; i++) {
     const p = document.createElement('div');
     p.className = 'particle';
     const size = 2 + Math.random() * 3;
@@ -658,6 +892,7 @@
     pc.appendChild(p);
   }
 
+  // ── DRUM PICKER ──────────────────────────────────────────────────
   // Theme selector
   let currentTheme = 'gold';
   const themeNameEl = document.getElementById('themeName');
@@ -850,14 +1085,19 @@
   }
 
   function getBaseParams() {
+    const rawdateEl = document.getElementById('rawdate');
     return {
-      man:   document.getElementById('nameMan').value.trim()    || 'James',
-      woman: document.getElementById('nameWoman').value.trim()  || 'Sofia',
-      date:  formatDate(document.getElementById('weddingDate').value),
-      time:  document.getElementById('weddingTime').value.trim() || '',
-      venue: document.getElementById('venue').value.trim()       || '',
-      msg:   document.getElementById('message').value.trim()     || '',
-      theme: currentTheme,
+      man:         document.getElementById('nameMan').value.trim()       || 'James',
+      woman:       document.getElementById('nameWoman').value.trim()     || 'Sofia',
+      todayDate:   document.getElementById('todayDate').value.trim()     || '',
+      todayTime:   document.getElementById('todayTime').value.trim()     || '',
+      date:        document.getElementById('ceremonyDate').value.trim()  || '',
+      time:        document.getElementById('ceremonyTime').value.trim()  || '',
+      rawdate:     rawdateEl ? rawdateEl.value : '',
+      venue:       document.getElementById('venue').value.trim()         || '',
+      textLocation: document.getElementById('textLocation').value.trim()  || '',
+      msg:         document.getElementById('message').value.trim()       || '',
+      theme:       currentTheme,
     };
   }
 
@@ -865,7 +1105,7 @@
   document.getElementById('generateBtn').addEventListener('click', () => {
     const b = getBaseParams();
     const params = new URLSearchParams(b);
-    window.open('invitation.html?' + params.toString(), '_blank');
+    window.open('invitation.html?' + params.toString(), '_blank', 'noopener');
   });
 
   // Special invitations
@@ -897,7 +1137,7 @@
     // Encode all notes as a JSON array
     params.set('special', btoa(unescape(encodeURIComponent(JSON.stringify(allNotes)))));
 
-    window.open('invitation.html?' + params.toString(), '_blank');
+    window.open('invitation.html?' + params.toString(), '_blank', 'noopener');
   });
 
   document.getElementById('addNoteBtn').addEventListener('click', () => {
@@ -906,15 +1146,327 @@
   });
 
   // Enter shortcuts
-  ['nameMan','nameWoman','weddingTime','venue'].forEach(id => {
+  ['nameMan','nameWoman','venue'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('keydown', e => {
       if (e.key === 'Enter') document.getElementById('generateBtn').click();
     });
   });
 
-  // Start with one entry
-  addNoteEntry();
+  // ── PICKER SYSTEM ────────────────────────────────────────────────
+  (function() {
+    // Backdrop
+    const backdrop = document.createElement('div');
+    backdrop.className = 'picker-backdrop';
+    document.body.appendChild(backdrop);
+
+    // Panel
+    const panel = document.createElement('div');
+    panel.className = 'picker-panel';
+    document.body.appendChild(panel);
+
+    let activeTrigger = null;
+    let activeFieldId = null;
+    let activeType = null;
+
+    // Calendar state
+    let calYear, calMonth, calSelectedDay = null, calSelectedMonth, calSelectedYear;
+
+    // Time state
+    let drumHour = 11, drumMin = 0, drumAmPm = 'AM';
+
+    // ITEM HEIGHT constant
+    const ITEM_H = 40;
+
+    // ── Close ──
+    function closePicker() {
+      panel.classList.remove('visible');
+      backdrop.classList.remove('visible');
+      if (activeTrigger) activeTrigger.classList.remove('open');
+      activeTrigger = null;
+    }
+    backdrop.addEventListener('click', closePicker);
+
+    // ── Open ──
+    window.openPicker = function(fieldId, type, trigger) {
+      if (activeTrigger === trigger && panel.classList.contains('visible')) {
+        closePicker(); return;
+      }
+      activeTrigger = trigger;
+      activeFieldId = fieldId;
+      activeType = type;
+      trigger.classList.add('open');
+
+      if (type === 'date') buildCalendar();
+      else buildTimePicker();
+
+      backdrop.classList.add('visible');
+      panel.classList.add('visible');
+      positionPanel(trigger);
+    };
+
+    function positionPanel(trigger) {
+      const rect = trigger.getBoundingClientRect();
+      const pw = panel.offsetWidth || 290;
+      const ph = panel.offsetHeight || 340;
+      const vw = window.innerWidth, vh = window.innerHeight;
+      let left = rect.left, top = rect.bottom + 6;
+      if (left + pw > vw - 10) left = vw - pw - 10;
+      if (left < 10) left = 10;
+      if (top + ph > vh - 10) top = rect.top - ph - 6;
+      if (top < 10) top = 10;
+      panel.style.left = left + 'px';
+      panel.style.top  = top  + 'px';
+    }
+
+    // ── CALENDAR ──
+    const MONTHS = ['January','February','March','April','May','June',
+                    'July','August','September','October','November','December'];
+    const DAYS = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+
+    function buildCalendar() {
+      const now = new Date();
+      if (calYear === undefined) { calYear = now.getFullYear(); calMonth = now.getMonth(); }
+
+      panel.innerHTML = `
+        <div class="cal-header">
+          <button class="cal-nav" id="calPrev">&#8249;</button>
+          <div class="cal-month-label" id="calMonthLabel"></div>
+          <button class="cal-nav" id="calNext">&#8250;</button>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+        <button class="picker-confirm" id="calConfirm">✦ Confirm Date</button>
+      `;
+
+      document.getElementById('calPrev').onclick = () => {
+        calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; }
+        renderCalGrid();
+      };
+      document.getElementById('calNext').onclick = () => {
+        calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; }
+        renderCalGrid();
+      };
+      document.getElementById('calConfirm').onclick = confirmDate;
+
+      renderCalGrid();
+    }
+
+    function renderCalGrid() {
+      document.getElementById('calMonthLabel').textContent = MONTHS[calMonth] + ' ' + calYear;
+      const grid = document.getElementById('calGrid');
+      grid.innerHTML = '';
+
+      DAYS.forEach(d => {
+        const el = document.createElement('div');
+        el.className = 'cal-dow'; el.textContent = d; grid.appendChild(el);
+      });
+
+      const firstDay = new Date(calYear, calMonth, 1).getDay();
+      const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+      const today = new Date();
+
+      for (let i = 0; i < firstDay; i++) {
+        const el = document.createElement('button'); el.className = 'cal-day empty'; grid.appendChild(el);
+      }
+      for (let d = 1; d <= daysInMonth; d++) {
+        const el = document.createElement('button');
+        el.className = 'cal-day'; el.textContent = d;
+        const isToday = d === today.getDate() && calMonth === today.getMonth() && calYear === today.getFullYear();
+        if (isToday) el.classList.add('today');
+        if (calSelectedDay === d && calSelectedMonth === calMonth && calSelectedYear === calYear)
+          el.classList.add('selected');
+        el.onclick = () => {
+          calSelectedDay = d; calSelectedMonth = calMonth; calSelectedYear = calYear;
+          renderCalGrid();
+        };
+        grid.appendChild(el);
+      }
+    }
+
+    function confirmDate() {
+      if (!calSelectedDay) return;
+      const d = new Date(calSelectedYear, calSelectedMonth, calSelectedDay);
+      const formatted = d.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+      document.getElementById(activeFieldId).value = formatted;
+      // Also store YYYY-MM-DD rawdate for ceremony date (for countdown)
+      if (activeFieldId === 'ceremonyDate') {
+        const mm = String(calSelectedMonth + 1).padStart(2,'0');
+        const dd = String(calSelectedDay).padStart(2,'0');
+        let rawEl = document.getElementById('rawdate');
+        if (!rawEl) { rawEl = document.createElement('input'); rawEl.type='hidden'; rawEl.id='rawdate'; document.body.appendChild(rawEl); }
+        rawEl.value = calSelectedYear + '-' + mm + '-' + dd;
+      }
+      const valEl = activeTrigger.querySelector('.picker-val');
+      valEl.textContent = formatted; valEl.classList.remove('placeholder');
+      closePicker();
+    }
+
+    // ── DRUM (TIME) ──
+    function buildTimePicker() {
+      // Load existing value
+      const existing = document.getElementById(activeFieldId).value;
+      if (existing) {
+        const m = existing.match(/(\d+):(\d+)\s*(AM|PM)/i);
+        if (m) {
+          drumHour = parseInt(m[1]);
+          drumMin  = parseInt(m[2]);
+          drumAmPm = m[3].toUpperCase();
+        }
+      }
+
+      const hours   = Array.from({length:12}, (_,i)=> String(i+1).padStart(2,'0'));
+      const minutes = Array.from({length:60}, (_,i)=> String(i).padStart(2,'0'));
+
+      panel.innerHTML = `
+        <div class="time-drum-wrap">
+          <div class="drum-col">
+            <div class="drum-label">Hour</div>
+            <div class="drum" id="drumH"><div class="drum-stripe"></div><div class="drum-list" id="drumHList"></div></div>
+          </div>
+          <div class="drum-sep">:</div>
+          <div class="drum-col">
+            <div class="drum-label">Min</div>
+            <div class="drum" id="drumM"><div class="drum-stripe"></div><div class="drum-list" id="drumMList"></div></div>
+          </div>
+          <div class="ampm-col">
+            <button class="ampm-btn${drumAmPm==='AM'?' active':''}" id="btnAM">AM</button>
+            <button class="ampm-btn${drumAmPm==='PM'?' active':''}" id="btnPM">PM</button>
+          </div>
+        </div>
+        <button class="picker-confirm" id="timeConfirm">✦ Confirm Time</button>
+      `;
+
+      // Populate drums with padding items for wrap feel
+      function fillDrum(listEl, items, selectedVal) {
+        // 2 padding items top & bottom
+        const pad = 2;
+        for (let p=0;p<pad;p++) { const el=document.createElement('div'); el.className='drum-item'; el.textContent=''; listEl.appendChild(el); }
+        items.forEach(v => {
+          const el = document.createElement('div');
+          el.className = 'drum-item'; el.textContent = v;
+          if (v === selectedVal) el.classList.add('selected');
+          listEl.appendChild(el);
+        });
+        for (let p=0;p<pad;p++) { const el=document.createElement('div'); el.className='drum-item'; el.textContent=''; listEl.appendChild(el); }
+      }
+
+      const hStr = String(drumHour).padStart(2,'0');
+      const mStr = String(drumMin).padStart(2,'0');
+      fillDrum(document.getElementById('drumHList'), hours, hStr);
+      fillDrum(document.getElementById('drumMList'), minutes, mStr);
+
+      // Scroll to selected
+      const hIdx = hours.indexOf(hStr);
+      const mIdx = minutes.indexOf(mStr);
+      setDrumPos(document.getElementById('drumHList'), hIdx);
+      setDrumPos(document.getElementById('drumMList'), mIdx);
+
+      // Attach drag/scroll
+      attachDrum(document.getElementById('drumH'), document.getElementById('drumHList'), hours, v => { drumHour = parseInt(v); });
+      attachDrum(document.getElementById('drumM'), document.getElementById('drumMList'), minutes, v => { drumMin = parseInt(v); });
+
+      document.getElementById('btnAM').onclick = () => { drumAmPm='AM'; document.getElementById('btnAM').classList.add('active'); document.getElementById('btnPM').classList.remove('active'); };
+      document.getElementById('btnPM').onclick = () => { drumAmPm='PM'; document.getElementById('btnPM').classList.add('active'); document.getElementById('btnAM').classList.remove('active'); };
+      document.getElementById('timeConfirm').onclick = confirmTime;
+    }
+
+    function setDrumPos(listEl, idx) {
+      const pad = 2;
+      listEl.style.transition = 'none';
+      listEl.style.top = (-( (pad + idx) * ITEM_H - 80) ) + 'px';
+    }
+
+    function attachDrum(drumEl, listEl, items, onSelect) {
+      const pad = 2;
+      let startY = 0, startTop = 0, isDragging = false, velocity = 0, lastY = 0, lastTime = 0;
+      let animFrame = null;
+
+      function getTop() { return parseInt(listEl.style.top) || 0; }
+      function clampedIdx(rawTop) {
+        const idx = Math.round(-(rawTop - 80) / ITEM_H) - pad;
+        return Math.max(0, Math.min(items.length - 1, idx));
+      }
+      function snapTo(idx, animate=true) {
+        const newTop = -((pad + idx) * ITEM_H - 80);
+        listEl.style.transition = animate ? 'top 0.22s cubic-bezier(0.22,1,0.36,1)' : 'none';
+        listEl.style.top = newTop + 'px';
+        // Update selected class
+        listEl.querySelectorAll('.drum-item').forEach((el, i) => {
+          el.classList.toggle('selected', i === pad + idx);
+        });
+        onSelect(items[idx]);
+      }
+
+      function onStart(y) {
+        if (animFrame) cancelAnimationFrame(animFrame);
+        isDragging = true; startY = y; startTop = getTop();
+        velocity = 0; lastY = y; lastTime = Date.now();
+        listEl.style.transition = 'none';
+      }
+      function onMove(y) {
+        if (!isDragging) return;
+        const dy = y - startY;
+        const newTop = startTop + dy;
+        // Bounds with rubber band
+        const minTop = -((pad + items.length - 1) * ITEM_H - 80);
+        const maxTop = -(pad * ITEM_H - 80) + ITEM_H;
+        const clamped = Math.max(minTop - 30, Math.min(maxTop + 30, newTop));
+        listEl.style.top = clamped + 'px';
+        const now = Date.now();
+        velocity = (y - lastY) / (now - lastTime + 1);
+        lastY = y; lastTime = now;
+        // Update highlights live
+        const idx = clampedIdx(clamped);
+        listEl.querySelectorAll('.drum-item').forEach((el, i) => {
+          el.classList.toggle('selected', i === pad + idx);
+        });
+      }
+      function onEnd() {
+        if (!isDragging) return; isDragging = false;
+        // Momentum
+        let top = getTop();
+        const fling = () => {
+          velocity *= 0.88;
+          top += velocity * 16;
+          listEl.style.top = top + 'px';
+          if (Math.abs(velocity) > 0.3) { animFrame = requestAnimationFrame(fling); }
+          else { snapTo(clampedIdx(top)); }
+        };
+        if (Math.abs(velocity) > 0.4) { animFrame = requestAnimationFrame(fling); }
+        else { snapTo(clampedIdx(top)); }
+      }
+
+      // Mouse
+      drumEl.addEventListener('mousedown', e => { e.preventDefault(); onStart(e.clientY); });
+      window.addEventListener('mousemove', e => onMove(e.clientY));
+      window.addEventListener('mouseup', onEnd);
+      // Touch
+      drumEl.addEventListener('touchstart', e => { e.preventDefault(); onStart(e.touches[0].clientY); }, {passive:false});
+      drumEl.addEventListener('touchmove',  e => { e.preventDefault(); onMove(e.touches[0].clientY); }, {passive:false});
+      drumEl.addEventListener('touchend',   onEnd);
+      // Wheel
+      drumEl.addEventListener('wheel', e => {
+        e.preventDefault();
+        const idx = clampedIdx(getTop());
+        const delta = e.deltaY > 0 ? 1 : -1;
+        snapTo(Math.max(0, Math.min(items.length-1, idx + delta)));
+      }, {passive:false});
+    }
+
+    function confirmTime() {
+      const h = String(drumHour).padStart(2,'0');
+      const m = String(drumMin).padStart(2,'0');
+      const val = `${h}:${m} ${drumAmPm}`;
+      document.getElementById(activeFieldId).value = val;
+      const valEl = activeTrigger.querySelector('.picker-val');
+      valEl.textContent = val; valEl.classList.remove('placeholder');
+      closePicker();
+    }
+
+  })();
+  // ── END PICKER SYSTEM ─────────────────────────────────────────────
+
+
 </script>
 </body>
 </html>
